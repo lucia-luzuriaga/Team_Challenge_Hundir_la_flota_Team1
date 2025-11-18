@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batalla Naval: AI Edition - Documentación</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Animated mesh gradient background */
+        .mesh-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Noise texture overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: 1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-heavy {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Card hover effects */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Smooth transitions */
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+        
+        /* Code block styling */
+        .code-block {
+            background: #2d2d2d;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        
+        /* Modal backdrop */
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen relative overflow-x-hidden">
+    <!-- Background gradient -->
+    <div class="mesh-gradient fixed inset-0 opacity-30"></div>
+    
+    <!-- Noise overlay -->
+    <div class="noise-overlay"></div>
+    
+    <!-- Main content -->
+    <div class="relative z-10">
+        <!-- Hero Section -->
+        <header class="min-h-screen flex items-center justify-center px-4 py-12">
+            <div class="text-center max-w-4xl mx-auto fade-in">
+                <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tight gradient-text">
+                    Batalla Naval
+                </h1>
+                <h2 class="text-3xl md:text-5xl font-bold mb-12 text-white/90">
+                     🚢TEAM SeaHackers🏴‍☠️
+                </h2>
+                <div class="glass-heavy rounded-3xl p-8 mb-12">
+                    <p class="text-xl text-white/80 mb-6">Documentación Técnica Detallada</p>
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <span class="px-4 py-2 bg-white/10 rounded-full text-sm font-medium">🙋‍♂️Carlos</span>
+                        <span class="px-4 py-2 bg-white/10 rounded-full text-sm font-medium">🙋‍♂️Alejandro</span>
+                        <span class="px-4 py-2 bg-white/10 rounded-full text-sm font-medium">🙋‍♀️Lucía</span>
+                        <span class="px-4 py-2 bg-white/10 rounded-full text-sm font-medium">🙋‍♀️Blanca</span>
+                        <span class="px-4 py-2 bg-white/10 rounded-full text-sm font-medium">🙋‍♀️Diana</span>
+                        <span class="px-4 py-2 bg-white/10 rounded-full text-sm font-medium">🙋‍♂️Héctor</span>
+                    </div>
+                </div>
+                <button onclick="scrollToModules()" class="glass px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-white/20 smooth-transition">
+                    Explorar Documentación →
+                </button>
+            </div>
+        </header>
+        
+        <!-- Navigation Hub -->
+        <section id="modules" class="min-h-screen px-4 py-20">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
+                    Módulos del Proyecto
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- clases.py Card -->
+                    <div onclick="openModule('clases')" class="glass-heavy rounded-3xl p-6 card-hover cursor-pointer group">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center group-hover:scale-110 smooth-transition">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">clases.py</h3>
+                            <p class="text-white/60 text-sm">Objetos inteligentes del tablero</p>
+                            <div class="mt-4 text-xs text-white/40">
+                                <p>• Clase Tablero</p>
+                                <p>• Gestión de barcos</p>
+                                <p>• Lógica de impacto</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- funciones.py Card -->
+                    <div onclick="openModule('funciones')" class="glass-heavy rounded-3xl p-6 card-hover cursor-pointer group">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center group-hover:scale-110 smooth-transition">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">funciones.py</h3>
+                            <p class="text-white/60 text-sm">Interacción y estrategia IA</p>
+                            <div class="mt-4 text-xs text-white/40">
+                                <p>• Validación de entrada</p>
+                                <p>• Estrategia de IA</p>
+                                <p>• Utilidades del sistema</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- variables.py Card -->
+                    <div onclick="openModule('variables')" class="glass-heavy rounded-3xl p-6 card-hover cursor-pointer group">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center group-hover:scale-110 smooth-transition">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">variables.py</h3>
+                            <p class="text-white/60 text-sm">Configuración y constantes</p>
+                            <div class="mt-4 text-xs text-white/40">
+                                <p>• Estados del juego</p>
+                                <p>• Configuración</p>
+                                <p>• Identificadores</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- main.py Card -->
+                    <div onclick="openModule('main')" class="glass-heavy rounded-3xl p-6 card-hover cursor-pointer group">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center group-hover:scale-110 smooth-transition">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">main.py</h3>
+                            <p class="text-white/60 text-sm">Orquestación del juego</p>
+                            <div class="mt-4 text-xs text-white/40">
+                                <p>• Flujo principal</p>
+                                <p>• Bucle de juego</p>
+                                <p>• Gestión de turnos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Modal for Content View -->
+    <div id="contentModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop absolute inset-0" onclick="closeModule()"></div>
+        <div class="relative h-full overflow-y-auto custom-scrollbar">
+            <div class="min-h-screen px-4 py-8">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Close button -->
+                    <button onclick="closeModule()" class="fixed top-4 right-4 z-50 glass p-3 rounded-full hover:bg-white/20 smooth-transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Content container -->
+                    <div id="moduleContent" class="glass-heavy rounded-3xl p-8">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Module data structure
+        const moduleData = {
+            clases: {
+                title: 'clases.py - Objetos Inteligentes del Tablero',
+                sections: [
+                    {
+                        title: '1. IMPORTACIONES (Librerías y Módulos)',
+                        code: `import numpy as np
+import variables as var
+import random`,
+                        explanation: `Al principio del archivo encontramos tres líneas que traen herramientas externas a nuestro código. Piensa en esto como sacar las herramientas de la caja antes de empezar a trabajar.
+
+<strong>import numpy as np:</strong> Importamos NumPy, una librería matemática muy potente. ¿Por qué? Python maneja listas (arrays) de forma lenta. NumPy crea "matrices" (tableros) que son extremadamente rápidas y nos permiten operar con filas y columnas enteras de golpe.
+
+<strong>as np:</strong> Es un alias. Para no escribir numpy.loquesea todo el rato, escribiremos np.loquesea.
+
+<strong>import variables as var:</strong> Importamos un archivo nuestro llamado variables.py. ¿Por qué? Para tener orden. Allí guardamos constantes como el tamaño del tablero o los nombres de los estados (AGUA, FUEGO). Usaremos var. para acceder a ellos.
+
+<strong>import random:</strong> Una librería estándar de Python. ¿Por qué? La necesitamos para generar números aleatorios (dónde poner los barcos, elegir orientación, etc.).`
+                    },
+                    {
+                        title: '2. LA CLASE Tablero',
+                        code: `class Tablero:`,
+                        explanation: `Concepto: Una Clase es un "plano" o una "plantilla". Imagina que es el plano de una casa. Cuando el juego empiece, construiremos (instanciaremos) dos casas (dos objetos) usando este plano: el tablero del Jugador y el de la Máquina.`
+                    },
+                    {
+                        title: '2.1. El Constructor (__init__)',
+                        code: `def __init__(self, id_jugador):`,
+                        explanation: `Esta función especial se ejecuta automáticamente cada vez que creamos un nuevo tablero. Es la puesta a punto inicial.
+
+<strong>self:</strong> Se refiere a "este objeto en concreto". Como vamos a crear dos tableros, self permite que cada uno sepa cuáles son sus propios datos y no los mezcle con el otro.
+
+<strong>id_jugador:</strong> Es una etiqueta (ej: "Player" o "AI") para saber de quién es este tablero.
+
+Dentro del constructor se crean la matriz del tablero y el registro de barcos.`
+                    },
+                    {
+                        title: '2.2. Creación de la Matriz',
+                        code: `self.tablero_privado = np.full((var.TAMANO, var.TAMANO), var.Estado.AGUA)`,
+                        explanation: `<strong>np.full:</strong> Crea una matriz (una rejilla tipo Excel).
+
+<strong>(var.TAMANO, var.TAMANO):</strong> Define las dimensiones (ej. 10 filas, 10 columnas).
+
+<strong>var.Estado.AGUA:</strong> Rellena todas las celdas inicialmente con AGUA (que vale 0).
+
+Nota: Creamos dos tableros (privado y publico). El privado tiene los barcos visibles; el público es lo que ve el enemigo (solo agua o disparos, no barcos ocultos).`
+                    },
+                    {
+                        title: '2.3. El Registro de Barcos',
+                        code: `self.registro_barcos = {}
+self.barco_id_counter = 0`,
+                        explanation: `Esto es un Diccionario vacío. Es crucial. Aquí no guardamos dibujos, sino datos. Guardaremos qué ID tiene cada barco, cuánta vida le queda y dónde está.
+
+<strong>self.barco_id_counter:</strong> Un contador para dar un número único a cada barco (10, 11, 12...). Así diferenciamos un barco de otro aunque tengan el mismo tamaño.`
+                    },
+                    {
+                        title: '2.4. Colocación de Barcos',
+                        code: `def inicializar_barcos(self):
+    for eslora in var.LISTA_BARCOS:
+        colocado = False
+        while not colocado:
+            x = random.randint(0, var.TAMANO - 1)
+            y = random.randint(0, var.TAMANO - 1)
+            orientacion = random.choice(['H', 'V'])
+            
+            if self._puede_colocar(x, y, eslora, orientacion):
+                self._colocar(x, y, eslora, orientacion)
+                colocado = True`,
+                        explanation: `Esta función se encarga de llenar el tablero al inicio.
+
+Lógica paso a paso:
+<strong>Bucle for:</strong> Recorre la lista de tamaños de barcos ([4, 3, 3, 2...]). "Para cada barco que tengo que poner..."
+
+<strong>Bucle while not colocado:</strong> Esto es un bucle de "fuerza bruta" o reintento.
+
+Genera una coordenada aleatoria (x, y) y una orientación (H o V).
+
+Pregunta: <strong>if self._puede_colocar(...):</strong> Llama a una función de validación.
+
+Si es posible: Llama a _colocar y marca colocado = True para salir del bucle while y pasar al siguiente barco del for.
+
+Si no es posible: El while se repite, generando nuevas coordenadas aleatorias hasta que encuentre hueco.`
+                    },
+                    {
+                        title: '2.5. El Validador (_puede_colocar)',
+                        code: `def _puede_colocar(self, x, y, eslora, orientacion):
+    if orientacion == 'H':
+        return x + eslora <= var.TAMANO and np.all(self.tablero_privado[y, x:x+eslora] == var.Estado.AGUA)
+    else:  # 'V'
+        return y + eslora <= var.TAMANO and np.all(self.tablero_privado[y:y+eslora, x] == var.Estado.AGUA)`,
+                        explanation: `Esta función devuelve True (sí se puede) o False (no se puede). No modifica nada, solo mira.
+
+Sintaxis Clave: Slicing de NumPy
+
+<strong>return np.all(self.tablero_privado[y, x:x+eslora] == var.Estado.AGUA)</strong>
+
+Esto es la magia de NumPy.
+
+Imagina la fila y del tablero.
+
+<strong>x:x+eslora:</strong> Significa "corta un trozo de esta fila desde la posición x hasta la posición x + tamaño del barco".
+
+<strong>== var.Estado.AGUA:</strong> Compara ese trozo cortado con AGUA.
+
+<strong>np.all(...):</strong> Devuelve True solo si TODAS las celdas de ese trozo son agua. Si hay una sola celda que no sea agua (otro barco o borde), devuelve False.
+
+Lógica humana: "¿Están vacíos todos los huecos donde quiero poner el barco? Y además, ¿cabe dentro de los límites del mapa?"`
+                    },
+                    {
+                        title: '2.6. Lógica de Disparo (recibir_disparo)',
+                        code: `def recibir_disparo(self, x, y):
+    # Validar si ya se disparó aquí
+    if self.tablero_publico[y, x] in [var.Estado.IMPACTO, var.Estado.FALLO, var.Estado.HUNDIDO]:
+        return None
+    
+    # Si es agua
+    if self.tablero_privado[y, x] == var.Estado.AGUA:
+        self.tablero_publico[y, x] = var.Estado.FALLO
+        return (False, None)
+    
+    # Si es un barco
+    barco_id = self.tablero_privado[y, x]
+    self.tablero_publico[y, x] = var.Estado.IMPACTO
+    
+    # Buscar barco en el registro
+    for barco in self.registro_barcos.values():
+        if barco['id'] == barco_id:
+            barco['impactos'].add((x, y))
+            
+            # Verificar si está hundido
+            if len(barco['impactos']) == barco['eslora']:
+                barco['hundido'] = True
+                # Marcar todas las celdas como hundidas
+                for coord in barco['coordenadas']:
+                    self.tablero_publico[coord[1], coord[0]] = var.Estado.HUNDIDO
+                return (True, barco['eslora'])
+            
+            return (True, None)`,
+                        explanation: `Esta es la función más compleja. Recibe un disparo en (x, y) y decide qué pasa.
+
+Flujo de Lógica:
+
+<strong>¿Ya dispararon aquí?</strong> Mira si la celda contiene IMPACTO, FALLO o HUNDIDO. Si es así, devuelve None (tiro inválido).
+
+<strong>¿Es Agua?</strong> Si la celda es Estado.AGUA:
+Cambia la celda a Estado.FALLO (círculo negro).
+Devuelve (False, None) -> "No acertaste, no hundiste nada".
+
+<strong>¿Es un Barco?</strong> (Si llegamos aquí, la celda tiene un ID de barco, ej: 10).
+
+Paso A: Cambia la celda visualmente a Estado.IMPACTO (explosión).
+
+Paso B (Crucial): Busca en el diccionario registro_barcos usando el ID que había en la casilla.
+
+Paso C: Añade la coordenada (x, y) al conjunto de impactos de ese barco.
+
+Paso D (Detectar Hundimiento):
+<strong>if len(barco['impactos']) == barco['eslora']:</strong>
+
+Pregunta: "¿Es el número de impactos igual al tamaño del barco?". Si un barco de tamaño 3 tiene 3 impactos, se ha hundido.
+
+Si se hunde: Recorre todas las coordenadas de ese barco y las cambia visualmente a Estado.HUNDIDO (fuego).
+
+Devuelve (True, barco['eslora']).`
+                    },
+                    {
+                        title: '2.7. Comprobar Victoria',
+                        code: `def comprobar_victoria(self):
+    return all(barco['hundido'] for barco in self.registro_barcos.values())`,
+                        explanation: `Recorre todos los barcos guardados en el diccionario.
+
+<strong>all(...):</strong> Es una función de Python que devuelve True solo si todos los elementos que revisa son verdaderos.
+
+Traducción: "¿Están TODOS los barcos marcados como hundidos? Si sí, has ganado".`
+                    },
+                    {
+                        title: '2.8. Renderizado (mostrar_tablero)',
+                        code: `def mostrar_tablero(self, tipo_vista='privado'):
+    for y in range(var.TAMANO):
+        for x in range(var.TAMANO):
+            celda = self.tablero_publico[y, x] if tipo_vista == 'publico' else self.tablero_privado[y, x]
+            
+            if celda == var.Estado.AGUA:
+                simbolo = "🌊 "
+            elif celda == var.Estado.IMPACTO:
+                simbolo = "💥 "
+            elif celda == var.Estado.FALLO:
+                simbolo = "⚫ "
+            elif celda == var.Estado.HUNDIDO:
+                simbolo = "🔥 "
+            else:  # Es un barco
+                if tipo_vista == 'privado':
+                    simbolo = "🚢 "
+                else:
+                    simbolo = "🌊 "  # Niebla de guerra
+            
+            print(simbolo, end="")
+        print()`,
+                        explanation: `Se encarga de imprimir el tablero bonito en la consola.
+
+Concepto: Vista Pública vs Privada
+
+<strong>tipo_vista='privado':</strong> Muestra tu propio tablero. Ves tus barcos (🚢), el agua (🌊) y los disparos.
+
+<strong>tipo_vista='publico':</strong> Muestra el tablero enemigo.
+
+Lógica de ocultación:
+
+<strong>if simbolo is None:</strong>
+     # Si la celda tiene un ID de barco (no es agua ni fuego ni impacto)
+     if tipo_vista == 'privado':
+         simbolo = "🚢 " # Tú ves tu barco
+     else:
+         simbolo = "🌊 " # El enemigo ve agua (niebla de guerra)
+
+Esto es fundamental. Aunque la matriz tenga un "10" (barco), si es vista pública, imprimimos una ola para no hacer trampas.`
+                    }
+                ]
+            },
+            funciones: {
+                title: 'funciones.py - Interacción Humana y Estrategia IA',
+                sections: [
+                    {
+                        title: '1. IMPORTACIONES (Herramientas del Sistema)',
+                        code: `import random
+import variables as var
+import os`,
+                        explanation: `<strong>random:</strong> Igual que en el archivo anterior, es el "dado" del ordenador para generar números aleatorios.
+
+<strong>variables as var:</strong> Nuestro archivo de constantes. Lo necesitamos para saber el tamaño del tablero y los códigos de estado (AGUA, HUNDIDO, etc.).
+
+<strong>os (Operating System):</strong> Esta es nueva. Es una librería que permite a Python "hablar" con el sistema operativo (Windows, Mac o Linux). La usaremos para limpiar la consola de texto.`
+                    },
+                    {
+                        title: '2. INTERACCIÓN HUMANA: pedir_coordenadas',
+                        code: `def pedir_coordenadas():
+    while True:
+        try:
+            x_str = input("Ingresa coordenada X (0-9): ")
+            y_str = input("Ingresa coordenada Y (0-9): ")
+            
+            x = int(x_str)
+            y = int(y_str)
+            
+            if not (0 <= x < var.TAMANO_TABLERO and 0 <= y < var.TAMANO_TABLERO):
+                print("Las coordenadas deben estar entre 0 y 9")
+                continue
+                
+            return x, y
+            
+        except ValueError:
+            print("Entrada no válida. Debes ingresar números.")`,
+                        explanation: `Esta función es el "Portero". Su trabajo es asegurar que el usuario no rompa el juego introduciendo datos incorrectos (como letras o números fuera de rango).
+
+Estructura de "Bucle Infinito con Salida":
+
+<strong>while True:</strong>
+Este bucle no tiene condición de parada inicial. Se repetirá eternamente hasta que el código encuentre un return. Es una técnica estándar para decir: "No te dejo pasar hasta que me des un dato válido".`
+                    },
+                    {
+                        title: '2.1. Bloque de Seguridad (try - except)',
+                        code: `try:
+    # Intentamos convertir el texto a número entero
+    x = int(x_str)
+except ValueError:
+    # Si el usuario escribió "patata", el programa salta aquí
+    print("Entrada no válida...")`,
+                        explanation: `El problema: La función input() siempre devuelve texto (String). Si el usuario escribe "hola" e intentamos hacer matemáticas con eso, el programa explota (crash).
+
+La solución: El bloque try intenta hacer la conversión peligrosa (int()). Si falla, Python no se cierra; salta al bloque except, muestra un error amigable y el bucle while True vuelve a empezar.`
+                    },
+                    {
+                        title: '2.2. Validación de Límites',
+                        code: `if not (0 <= x < var.TAMANO_TABLERO and 0 <= y < var.TAMANO_TABLERO):
+    print("Las coordenadas deben estar entre 0 y 9")
+    continue`,
+                        explanation: `Verifica que el número esté dentro del tablero (entre 0 y 9).
+
+<strong>continue:</strong> Esta palabra clave le dice al bucle: "Ignora todo lo que hay debajo y vuelve a empezar desde arriba del while".`
+                    },
+                    {
+                        title: '3. EL CEREBRO DE LA IA: actualizar_estrategia_ia',
+                        code: `def actualizar_estrategia_ia(tablero_oponente, x, y, es_impacto, es_hundido):
+    if es_hundido is not None:
+        # Se hundió un barco, limpiar objetivo
+        tablero_oponente.objetivo_impactado = None
+        return
+    
+    if es_impacto:
+        # Se impactó un barco, añadir vecinos a la lista de próximos disparos
+        posibles_vecinos = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
+        
+        for nx, ny in posibles_vecinos:
+            if (0 <= nx < var.TAMANO_TABLERO and 
+                0 <= ny < var.TAMANO_TABLERO and
+                tablero_oponente.tablero_publico[ny, nx] == var.Estado.AGUA and
+                (nx, ny) not in tablero_oponente.proximos_disparos):
+                
+                tablero_oponente.proximos_disparos.append((nx, ny))`,
+                        explanation: `Esta función se ejecuta justo después de que la IA dispara. Sirve para que la IA "aprenda" del resultado y decida qué hacer en el futuro.
+
+<strong>Caso: Barco Hundido</strong>
+
+<strong>if es_hundido is not None:</strong>
+    tablero_oponente.objetivo_impactado = None
+    return
+
+Si hemos hundido el barco, la IA se relaja. Borra su "objetivo actual" (None) porque ya ha terminado el trabajo. Vuelve a modo aleatorio.
+
+<strong>Caso: Impacto (Pero sigue a flote)</strong>
+
+Aquí es donde la IA se vuelve lista. Si damos a un barco, es lógico disparar alrededor (Arriba, Abajo, Izquierda, Derecha) en el siguiente turno.
+
+Definir Vecinos:
+
+<strong>posibles_vecinos = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]</strong>
+
+Crea una lista temporal con las 4 coordenadas adyacentes (la cruz).
+
+Filtrado Inteligente: Recorremos esos vecinos y aplicamos tres filtros estrictos antes de añadirlos a la cola de tareas (proximos_disparos):
+
+Filtro 1 (Límites): 0 <= nx < var.TAMANO.... ¿La coordenada existe o se sale del mapa?
+
+Filtro 2 (Estado): tablero.publico[...] == var.Estado.AGUA. ¿Es una casilla desconocida? La IA no debe disparar donde ya hay fuego o fallos. Aquí usamos el Enum para ser precisos.
+
+Filtro 3 (Duplicados): (nx, ny) not in .... ¿Ya tenía planeado disparar ahí? No queremos duplicar tareas.
+
+Si pasa los filtros, se añade a la cola: tablero_oponente.proximos_disparos.append((nx, ny)).`
+                    },
+                    {
+                        title: '4. EL GATILLO DE LA IA: disparo_maquina',
+                        code: `def disparo_maquina(tablero_oponente):
+    # Modo "Cazador" - prioridad alta
+    while tablero_oponente.proximos_disparos:
+        x, y = tablero_oponente.proximos_disparos.pop(0)
+        
+        if tablero_oponente.tablero_publico[y, x] == var.Estado.AGUA:
+            return x, y
+    
+    # Modo "Aleatorio" - prioridad baja
+    while True:
+        x = random.randint(0, var.TAMANO_TABLERO - 1)
+        y = random.randint(0, var.TAMANO_TABLERO - 1)
+        
+        if tablero_oponente.tablero_publico[y, x] == var.Estado.AGUA:
+            return x, y`,
+                        explanation: `Esta función decide dónde disparar en este turno. Tiene dos modos de operación.
+
+<strong>Modo "Cazador" (Prioridad Alta)</strong>
+
+<strong>while tablero_oponente.proximos_disparos:</strong>
+    x, y = tablero_oponente.proximos_disparos.pop(0)
+
+Mira si hay tareas pendientes en la cola (generadas por la función anterior).
+
+<strong>.pop(0):</strong> Es fundamental. Saca el primer elemento de la lista (el más antiguo) y lo elimina de ella. Es una cola FIFO (First In, First Out).
+
+Doble Verificación: Antes de disparar, vuelve a comprobar if ... == var.Estado.AGUA. Esto es un mecanismo de seguridad por si la situación del tablero cambió.
+
+<strong>Modo "Aleatorio" (Prioridad Baja)</strong>
+
+Si la lista proximos_disparos está vacía (nadie ha acertado nada recientemente), entra en un bucle while True.
+
+<strong>x = random.randint(...)</strong>
+<strong>y = random.randint(...)</strong>
+<strong>if ... == var.Estado.AGUA:</strong>
+    return x, y
+
+Genera coordenadas al azar.
+
+Crucial: Solo devuelve la coordenada si es AGUA. Si genera una coordenada donde ya disparó antes (Fallo o Impacto), el bucle se repite. Esto evita que la IA pierda el turno disparando a un sitio repetido.`
+                    },
+                    {
+                        title: '5. UTILIDADES DE SISTEMA: limpiar_pantalla',
+                        code: `def limpiar_pantalla():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')`,
+                        explanation: `Esta función mejora la experiencia visual borrando el texto anterior de la terminal.
+
+<strong>os.name:</strong> Pregunta a Python "¿En qué sistema estoy?".
+
+<strong>'nt':</strong> Significa "New Technology", el nombre técnico del núcleo de Windows.
+
+En Windows, el comando de consola para limpiar es cls.
+
+<strong>else:</strong> Para Mac (macOS) y Linux (Ubuntu, etc.).
+
+En estos sistemas, el comando es clear.
+
+<strong>os.system():</strong> Ejecuta ese comando textual como si tú lo escribieras en la terminal negra.`
+                    }
+                ]
+            },
+            variables: {
+                title: 'variables.py - Centro de Control del Sistema',
+                sections: [
+                    {
+                        title: '1. IMPORTACIONES: IntEnum',
+                        code: `from enum import IntEnum`,
+                        explanation: `Aquí estamos importando una herramienta específica de la librería estándar de Python llamada enum.
+
+¿Qué es un Enum? Es una forma de dar nombres a una lista de opciones fijas. Piensa en los días de la semana (Lunes, Martes...). Son fijos, no cambian.
+
+¿Por qué IntEnum y no solo Enum? Esta es la clave técnica. Nuestro tablero usa NumPy, y NumPy trabaja con números puros (matrices matemáticas). IntEnum nos permite crear etiquetas (como AGUA) que Python trata exactamente igual que números enteros (como 0). Esto permite que numpy entienda nuestros estados sin quejarse.`
+                    },
+                    {
+                        title: '2. CONSTANTES DE CONFIGURACIÓN',
+                        code: `TAMANO_TABLERO = 10
+LISTA_BARCOS = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]`,
+                        explanation: `En Python, cuando ves una variable escrita en MAYÚSCULAS_CON_GUIONES_BAJOS, significa que es una Constante. Es una convención entre programadores que grita: "¡No cambies este valor durante la partida!".
+
+<strong>TAMANO_TABLERO = 10</strong>
+Define las dimensiones de la matriz.
+Poder del código: Si cambias este 10 por un 20, automáticamente todo el juego (la matriz de NumPy, las validaciones de límites en funciones.py, el dibujo en consola) se adapta a un tablero de 20x20 sin tocar nada más. Es la "fuente de la verdad".
+
+<strong>LISTA_BARCOS = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]</strong>
+Es una Lista estándar de enteros.
+Cada número representa la eslora (longitud) de un barco.
+Modificabilidad: Si quieres un juego más difícil con solo barcos pequeños, borras el 4 y los 3. El bucle for en clases.py leerá esta lista y solo colocará lo que haya aquí.`
+                    },
+                    {
+                        title: '3. EL CORAZÓN LÓGICO: class Estado',
+                        code: `class Estado(IntEnum):
+    AGUA = 0
+    IMPACTO = 2
+    FALLO = 3
+    HUNDIDO = 4`,
+                        explanation: `Este bloque resuelve el mayor problema de legibilidad en programación: los Números Mágicos.
+
+<strong>El Problema (Sin Enums)</strong>
+
+Imagina que en clases.py encontraras esto: if tablero[x, y] == 3: ¿Qué significa 3? ¿Es un barco? ¿Es agua? ¿Es un error? Tendrías que memorizarlo. Eso es un "Número Mágico" y es una mala práctica.
+
+<strong>La Solución (Con Enums)</strong>
+
+Ahora el código dice: if tablero[x, y] == Estado.FALLO: Cualquiera puede leerlo y entenderlo.
+
+<strong>Funcionamiento Interno</strong>
+
+Gracias a que hereda de (IntEnum):
+Para ti: Es Estado.AGUA.
+Para el ordenador (y NumPy): Es simplemente el número 0. Esto nos da lo mejor de los dos mundos: la velocidad de los números y la legibilidad de las palabras.`
+                    },
+                    {
+                        title: '4. GESTIÓN DE IDENTIFICADORES: BARCO_ID_INICIO',
+                        code: `BARCO_ID_INICIO = 10`,
+                        explanation: `<strong>El Problema de la Colisión de IDs:</strong> En nuestra matriz, cada celda tiene un número.
+0 = Agua
+2 = Impacto
+3 = Fallo
+4 = Hundido
+
+Si pusiéramos un barco y le diéramos el ID 2, el juego se confundiría: "¿Esta casilla tiene el Barco nº 2 o es una explosión (IMPACTO = 2)?".
+
+<strong>La Solución:</strong> Reservamos los números pequeños (0 al 9) para estados del sistema. Los barcos empiezan a contar desde 10.
+Barco 1 -> ID 10
+Barco 2 -> ID 11
+Barco 3 -> ID 12
+
+Así, si el programa ve un número >= 10, sabe seguro que es un barco intacto. Si ve un número < 10, sabe que es agua, fuego o fallo.`
+                    }
+                ]
+            },
+            main: {
+                title: 'main.py - El Director de Orquesta',
+                sections: [
+                    {
+                        title: '1. CONCEPTO GENERAL: El Director de Orquesta',
+                        code: `import clases
+import funciones
+import time`,
+                        explanation: `main.py no "sabe" cómo validar una coordenada (eso lo hace funciones.py) ni "sabe" cómo guardar un barco en memoria (eso lo hace clases.py).
+
+Su trabajo es dar las órdenes:
+"Funciones, límpiame la pantalla".
+"Clases, créame un tablero nuevo".
+"Funciones, pídeme una coordenada".
+"Tablero, recibe este disparo".
+
+Es el pegamento que une todo.`
+                    },
+                    {
+                        title: '2. IMPORTACIONES Y DEPENDENCIAS',
+                        code: `import clases
+import funciones
+import time`,
+                        explanation: `<strong>import clases:</strong> Nos permite usar clases.Tablero. Sin esto, no podemos crear los objetos del juego.
+
+<strong>import funciones:</strong> Nos permite usar la lógica de la IA y las herramientas de consola (limpiar_pantalla, pedir_coordenadas).
+
+<strong>import time:</strong> Librería estándar para pausar la ejecución (time.sleep). Vital para el ritmo del juego (UX), para que los textos no pasen volando.`
+                    },
+                    {
+                        title: '3. EL BUCLE DE CONFIGURACIÓN (Fase 1)',
+                        code: `def run_game():
+    tablero_jugador = None # Inicializamos la variable vacía fuera del bucle
+
+    while True:
+        # 1. Limpieza
+        funciones.limpiar_pantalla()
+        
+        # 2. INSTANCIACIÓN (Crear el objeto)
+        tablero_jugador = clases.Tablero(id_jugador='Player')
+        
+        # 3. Llamada a Método del Objeto
+        tablero_jugador.inicializar_barcos()
+        
+        # 4. Mostrar resultado
+        tablero_jugador.mostrar_tablero('privado')
+        
+        # 5. Preguntar si está bien
+        respuesta = input("¿Te gusta esta distribución? (s/n): ")
+        if respuesta.lower() == 's':
+            break`,
+                        explanation: `El código empieza definiendo run_game(). Lo primero que encontramos es un patrón de Validación Visual.
+
+Análisis de Sintaxis y Lógica:
+
+<strong>clases.Tablero(...):</strong> Aquí nace el objeto. Se reserva memoria RAM para sus matrices y diccionarios.
+
+¿Por qué dentro del while? Esta es la clave. Si el usuario dice "No me gusta la distribución", el bucle se repite. Al ejecutarse de nuevo la línea tablero_jugador = clases.Tablero(...), se destruye el tablero anterior y se crea uno nuevo y limpio. Si hiciéramos esto fuera del bucle, los barcos se amontonarían unos encima de otros.
+
+<strong>tablero_jugador.mostrar_tablero('privado'):</strong> main le pide al objeto que se dibuje a sí mismo. Le pasamos 'privado' para ver nuestros propios barcos.`
+                    },
+                    {
+                        title: '4. EL RITMO DE JUEGO (Fase 2 - Setup IA)',
+                        code: `print("Desplegando flota enemiga...")
+tablero_maquina = clases.Tablero(id_jugador='AI')
+tablero_maquina.inicializar_barcos()
+time.sleep(1)`,
+                        explanation: `Aquí creamos el rival. Fíjate en el uso de time.sleep(1). Esto detiene el programa 1 segundo. Sin esto, el mensaje "Desplegando flota..." aparecería y desaparecería en 0.001 segundos. Las pausas dan sensación de "proceso" al usuario.`
+                    },
+                    {
+                        title: '5. EL MOTOR DEL JUEGO (Fase 3 - Game Loop)',
+                        code: `turno = 'Player'  # Variable de ESTADO (¿De quién es el turno?)
+
+while True:
+    funciones.limpiar_pantalla()
+    
+    # Renderizado constante:
+    print(f"Turno: {turno}")
+    print("Tu tablero:")
+    tablero_jugador.mostrar_tablero('privado')
+    print("\\nTablero enemigo:")
+    tablero_maquina.mostrar_tablero('publico')`,
+                        explanation: `Entramos en el corazón del programa. Un bucle infinito que solo se rompe si alguien gana.
+
+Limpiar y Pintar: En cada turno, borramos todo lo anterior y volvemos a pintar los tableros actualizados. Esto crea la ilusión de una interfaz gráfica dinámica en una consola de texto estática.
+
+Vista Pública: Al tablero de la máquina le pasamos 'publico' para que clases.py oculte los barcos y solo muestre agua/disparos.`
+                    },
+                    {
+                        title: '6. TURNO DEL JUGADOR (Lógica de Llamadas)',
+                        code: `if turno == 'Player':
+    # Bucle interno para validar disparo repetido
+    while True:
+        x, y = funciones.pedir_coordenadas()
+        resultado = tablero_maquina.recibir_disparo(x, y)
+        
+        if resultado is None:
+            print("Ya has disparado ahí...")
+        else:
+            break # Salimos del bucle de pedir, el disparo es válido
+    
+    # Desempaquetar resultado
+    es_impacto, es_hundido = resultado
+    
+    if es_impacto:
+        print("¡Impacto!")
+        if es_hundido:
+            print(f"¡Hundido un barco de {es_hundido} casillas!")
+    else:
+        print("Agua...")
+    
+    # Cambiar turno
+    turno = 'AI'
+    
+    # Verificar victoria
+    if tablero_maquina.comprobar_victoria():
+        print("¡Felicidades! ¡Has ganado!")
+        break`,
+                        explanation: `El paso de mensajes:
+
+main llama a funciones.pedir_coordenadas() -> Recibe (x, y).
+main llama a tablero_maquina.recibir_disparo(x, y) -> Le pasa la patata caliente al objeto Tablero.
+Tablero procesa la lógica (¿Agua? ¿Tocado? ¿Hundido?) y devuelve una tupla.
+
+Desempaquetado de Tuplas:
+
+<strong>es_impacto, es_hundido = resultado</strong>
+recibir_disparo devolvía algo como (True, 2) (Impacto, Barco de 2 hundido). Aquí separamos esos dos valores en variables individuales para usarlas en los if siguientes.
+
+Gestión de Victoria:
+
+<strong>if tablero_maquina.comprobar_victoria():</strong>
+    break # ROMPE el while True principal. El juego acaba.`
+                    },
+                    {
+                        title: '7. TURNO DE LA IA (Inteligencia y Memoria)',
+                        code: `else: # Turno de la IA
+    print("Turno de la máquina...")
+    time.sleep(1)
+    
+    while True:
+        # PASO DE OBJETO POR REFERENCIA
+        x, y = funciones.disparo_maquina(tablero_jugador)
+        resultado = tablero_jugador.recibir_disparo(x, y)
+        
+        if resultado is not None:
+            break
+    
+    es_impacto, es_hundido = resultado
+    
+    # Actualizar estrategia de la IA
+    funciones.actualizar_estrategia_ia(tablero_jugador, x, y, es_impacto, es_hundido)
+    
+    # Mostrar resultado
+    if es_impacto:
+        print("La máquina ha impactado tu barco!")
+        if es_hundido:
+            print(f"¡La máquina ha hundido tu barco de {es_hundido} casillas!")
+    else:
+        print("La máquina ha disparado al agua...")
+    
+    # Cambiar turno
+    turno = 'Player'
+    
+    # Verificar victoria
+    if tablero_jugador.comprobar_victoria():
+        print("La máquina ha ganado. ¡Mejor suerte la próxima vez!")
+        break`,
+                        explanation: `Este bloque es más complejo porque implica pasar objetos enteros como argumentos.
+
+<strong>else: # Turno de la IA</strong>
+    while True:
+        # PASO DE OBJETO POR REFERENCIA
+        x, y = funciones.disparo_maquina(tablero_jugador)
+
+¡Atención aquí! Llamamos a funciones.disparo_maquina y le pasamos tablero_jugador.
+
+¿Por qué? Porque la función necesita "leer" la matriz de tu tablero para saber dónde hay huecos (Agua) y decidir dónde disparar. No le pasamos una copia, le pasamos el acceso directo al objeto real.
+
+<strong>resultado = tablero_jugador.recibir_disparo(x, y)</strong>
+# ... desempaquetado ...
+<strong>funciones.actualizar_estrategia_ia(tablero_jugador, x, y, es_impacto, es_hundido)</strong>
+
+El Ciclo de Aprendizaje:
+La IA dispara.
+Obtenemos el resultado (impacto o no).
+Llamamos a actualizar_estrategia_ia pasando de nuevo el tablero_jugador.
+La función modifica la lista interna proximos_disparos dentro del objeto tablero_jugador.
+En el siguiente turno, la IA recordará lo que pasó aquí.`
+                    },
+                    {
+                        title: '8. PUNTO DE ENTRADA (Entry Point)',
+                        code: `if __name__ == '__main__':
+    run_game()`,
+                        explanation: `Esta es una buena práctica de Python.
+
+Significa: "Si ejecutas este archivo directamente (haciendo doble clic o python main.py), lanza el juego".
+
+"Pero si importas este archivo desde otro lado, NO lances el juego".`
+                    }
+                ]
+            }
+        };
+        
+        // Smooth scroll to modules
+        function scrollToModules() {
+            document.getElementById('modules').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Open module modal
+        function openModule(moduleId) {
+            const modal = document.getElementById('contentModal');
+            const content = document.getElementById('moduleContent');
+            const module = moduleData[moduleId];
+            
+            if (!module) return;
+            
+            // Generate HTML content
+            let html = `
+                <div class="mb-8">
+                    <button onclick="closeModule()" class="mb-6 glass px-4 py-2 rounded-xl hover:bg-white/20 smooth-transition inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Volver a módulos
+                    </button>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">${module.title}</h1>
+                </div>
+                
+                <div class="space-y-12">
+            `;
+            
+            module.sections.forEach((section, index) => {
+                html += `
+                    <div class="fade-in" style="animation-delay: ${index * 0.1}s">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white/90">${section.title}</h2>
+                        
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <!-- Code Section -->
+                            <div class="order-2 lg:order-1">
+                                <h3 class="text-lg font-semibold mb-3 text-white/70">Código</h3>
+                                <div class="code-block">
+                                    <pre><code class="language-python">${escapeHtml(section.code)}</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Explanation Section -->
+                            <div class="order-1 lg:order-2">
+                                <h3 class="text-lg font-semibold mb-3 text-white/70">Explicación</h3>
+                                <div class="glass rounded-2xl p-6 custom-scrollbar max-h-96 overflow-y-auto">
+                                    <div class="prose prose-invert max-w-none">
+                                        ${section.explanation}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+            
+            // Re-highlight code
+            Prism.highlightAll();
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close module modal
+        function closeModule() {
+            const modal = document.getElementById('contentModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModule();
+            }
+        });
+        
+        // Add smooth reveal animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all cards when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease-out';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
