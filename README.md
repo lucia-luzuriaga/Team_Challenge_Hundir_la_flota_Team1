@@ -15,7 +15,6 @@ El código está organizado en archivos modulares:
 - funciones.py: Contiene funciones utilitarias como pedir_coordenadas y la lógica de la IA inteligente.  
 - variables.py: Almacena las constantes del juego (tamaño del tablero, esloras de los barcos y marcadores de estado).requirements.txt: Lista de dependencias necesarias.
 
-- 
 ## 🚀 Guía de Instalación y Ejecución  
 Sigue estos pasos para descargar el repositorio, instalar las dependencias necesarias y empezar a jugar.  
 
